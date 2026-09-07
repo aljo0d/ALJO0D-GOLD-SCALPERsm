@@ -22,7 +22,7 @@ function sendJson(res, statusCode, data) {
     const body = JSON.stringify(data);
 
     res.writeHead(statusCode, {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json; charset=utf-8",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type"
@@ -33,6 +33,7 @@ function sendJson(res, statusCode, data) {
 
 function readBody(req) {
     return new Promise((resolve, reject) => {
+
         let body = "";
 
         req.on("data", chunk => {
@@ -40,6 +41,7 @@ function readBody(req) {
         });
 
         req.on("end", () => {
+
             if (!body) {
                 resolve({});
                 return;
@@ -62,7 +64,12 @@ function now() {
 
 const server = http.createServer(async (req, res) => {
 
+    // ============================
+    // CORS
+    // ============================
+
     if (req.method === "OPTIONS") {
+
         res.writeHead(204, {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
@@ -76,10 +83,24 @@ const server = http.createServer(async (req, res) => {
     try {
 
         // ============================
-        // HEALTH CHECK
+        // SAFE PATH DETECTION
         // ============================
 
-        if (req.method === "GET" && req.url === "/") {
+        const requestUrl = new URL(
+            req.url || "/",
+            "http://" + (req.headers.host || "localhost")
+        );
+
+        const path = requestUrl.pathname;
+
+        // ============================
+        // ROOT / HEALTH
+        // ============================
+
+        if (
+            req.method === "GET" &&
+            (path === "/" || path === "/health")
+        ) {
 
             sendJson(res, 200, {
                 ok: true,
@@ -97,7 +118,7 @@ const server = http.createServer(async (req, res) => {
 
         if (
             req.method === "GET" &&
-            req.url === "/robot/status"
+            path === "/robot/status"
         ) {
 
             sendJson(res, 200, {
@@ -109,12 +130,12 @@ const server = http.createServer(async (req, res) => {
         }
 
         // ============================
-        // ACCOUNT STATUS
+        // ACCOUNT
         // ============================
 
         if (
             req.method === "GET" &&
-            req.url === "/account"
+            path === "/account"
         ) {
 
             sendJson(res, 200, {
@@ -136,7 +157,7 @@ const server = http.createServer(async (req, res) => {
 
         if (
             req.method === "POST" &&
-            req.url === "/robot/start"
+            path === "/robot/start"
         ) {
 
             const data = await readBody(req);
@@ -169,8 +190,7 @@ const server = http.createServer(async (req, res) => {
             sendJson(res, 200, {
                 ok: true,
                 action: "START",
-                message:
-                    "Robot start command accepted.",
+                message: "Robot start command accepted.",
                 robot: robotState
             });
 
@@ -183,7 +203,7 @@ const server = http.createServer(async (req, res) => {
 
         if (
             req.method === "POST" &&
-            req.url === "/robot/stop"
+            path === "/robot/stop"
         ) {
 
             robotState.running = false;
@@ -193,9 +213,29 @@ const server = http.createServer(async (req, res) => {
             sendJson(res, 200, {
                 ok: true,
                 action: "STOP",
-                message:
-                    "Robot stop command accepted.",
+                message: "Robot stop command accepted.",
                 robot: robotState
+            });
+
+            return;
+        }
+
+        // ============================
+        // DEBUG ROUTE
+        // ============================
+
+        if (
+            req.method === "GET" &&
+            path === "/debug"
+        ) {
+
+            sendJson(res, 200, {
+                ok: true,
+                method: req.method,
+                url: req.url,
+                path: path,
+                host: req.headers.host,
+                time: now()
             });
 
             return;
@@ -207,7 +247,10 @@ const server = http.createServer(async (req, res) => {
 
         sendJson(res, 404, {
             ok: false,
-            error: "Endpoint not found"
+            error: "Endpoint not found",
+            method: req.method,
+            path: path,
+            url: req.url
         });
 
     } catch (error) {
@@ -219,7 +262,7 @@ const server = http.createServer(async (req, res) => {
     }
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
 
     console.log(
         "ALJO0D GOLD SCALPER Trading Engine running on port " +
