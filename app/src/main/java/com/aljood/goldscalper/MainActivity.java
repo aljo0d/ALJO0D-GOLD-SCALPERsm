@@ -17,19 +17,18 @@ public class MainActivity extends Activity {
     private TextView connectionText;
     private TextView profitText;
     private TextView tradesText;
-    private TextView lastTradeText;
     private Button startButton;
     private Button stopButton;
 
-    private int BG = Color.rgb(8, 12, 18);
-    private int CARD = Color.rgb(17, 23, 32);
-    private int CARD2 = Color.rgb(22, 29, 40);
-    private int WHITE = Color.WHITE;
-    private int MUTED = Color.rgb(155, 165, 180);
-    private int GREEN = Color.rgb(48, 210, 130);
-    private int RED = Color.rgb(245, 75, 85);
-    private int GOLD = Color.rgb(235, 180, 65);
-    private int BLUE = Color.rgb(75, 145, 255);
+    private final int BG = Color.rgb(8, 12, 18);
+    private final int CARD = Color.rgb(17, 23, 32);
+    private final int CARD2 = Color.rgb(23, 30, 41);
+    private final int WHITE = Color.WHITE;
+    private final int MUTED = Color.rgb(155, 165, 180);
+    private final int GREEN = Color.rgb(48, 210, 130);
+    private final int RED = Color.rgb(245, 75, 85);
+    private final int GOLD = Color.rgb(235, 180, 65);
+    private final int BLUE = Color.rgb(75, 145, 255);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,33 +37,29 @@ public class MainActivity extends Activity {
         getWindow().setStatusBarColor(BG);
         getWindow().setNavigationBarColor(BG);
 
-        buildInterface();
+        createUI();
     }
 
-    private void buildInterface() {
+    private void createUI() {
 
-        ScrollView scroll = new ScrollView(this);
-        scroll.setFillViewport(true);
-        scroll.setBackgroundColor(BG);
+        ScrollView scrollView = new ScrollView(this);
+        scrollView.setBackgroundColor(BG);
+        scrollView.setFillViewport(true);
 
         root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(dp(18), dp(12), dp(18), dp(28));
+        root.setPadding(dp(18), dp(14), dp(18), dp(30));
         root.setBackgroundColor(BG);
 
-        scroll.addView(root);
+        scrollView.addView(root);
 
-        // =====================================================
         // HEADER
-        // =====================================================
-
         LinearLayout header = new LinearLayout(this);
-        header.setOrientation(LinearLayout.HORIZONTAL);
         header.setGravity(Gravity.CENTER_VERTICAL);
 
-        TextView logo = text(
+        TextView logo = makeText(
                 "ALJO0D",
-                24,
+                25,
                 WHITE,
                 true
         );
@@ -78,82 +73,79 @@ public class MainActivity extends Activity {
                 )
         );
 
-        TextView live = text(
-                "●  LIVE",
+        TextView live = makeText(
+                "● LIVE",
                 12,
                 GREEN,
                 true
         );
-        live.setGravity(Gravity.CENTER);
 
-        GradientDrawable liveBg = rounded(
-                Color.rgb(18, 48, 38),
-                100
-        );
-        live.setBackground(liveBg);
+        live.setGravity(Gravity.CENTER);
         live.setPadding(dp(12), dp(7), dp(12), dp(7));
+        live.setBackground(round(GREEN_DARK(), 50));
 
         header.addView(live);
 
         root.addView(header);
 
-        TextView subtitle = text(
+        TextView subtitle = makeText(
                 "GOLD SCALPER",
                 12,
                 MUTED,
                 false
         );
-        subtitle.setPadding(0, dp(2), 0, dp(8));
+
+        subtitle.setPadding(0, dp(2), 0, dp(12));
         root.addView(subtitle);
 
-        // =====================================================
         // ROBOT CARD
-        // =====================================================
+        LinearLayout robotCard = makeCard();
 
-        LinearLayout robotCard = card();
+        LinearLayout robotRow = new LinearLayout(this);
+        robotRow.setGravity(Gravity.CENTER_VERTICAL);
 
-        LinearLayout robotTop = new LinearLayout(this);
-        robotTop.setOrientation(LinearLayout.HORIZONTAL);
-        robotTop.setGravity(Gravity.CENTER_VERTICAL);
-
-        TextView goldIcon = text(
+        TextView gold = makeText(
                 "Au",
                 22,
                 GOLD,
                 true
         );
-        goldIcon.setGravity(Gravity.CENTER);
-        goldIcon.setBackground(
-                rounded(Color.rgb(53, 43, 22), 18)
+
+        gold.setGravity(Gravity.CENTER);
+        gold.setPadding(
+                dp(14),
+                dp(11),
+                dp(14),
+                dp(11)
         );
-        goldIcon.setPadding(
-                dp(13), dp(10), dp(13), dp(10)
+        gold.setBackground(
+                round(Color.rgb(55, 44, 22), 18)
         );
 
-        robotTop.addView(goldIcon);
+        robotRow.addView(gold);
 
         LinearLayout robotInfo = new LinearLayout(this);
         robotInfo.setOrientation(LinearLayout.VERTICAL);
         robotInfo.setPadding(dp(12), 0, 0, 0);
 
-        TextView robotName = text(
+        TextView robotName = makeText(
                 "ALJO0D GOLD SCALPER",
-                17,
+                16,
                 WHITE,
                 true
         );
 
-        TextView robotDescription = text(
-                "XAUUSD • Fast Gold Scalping",
-                12,
+        TextView robotDesc = makeText(
+                "XAUUSD • FAST GOLD SCALPING",
+                11,
                 MUTED,
                 false
         );
 
         robotInfo.addView(robotName);
-        robotInfo.addView(robotDescription);
+        robotInfo.addView(robotDesc);
 
-        robotTop.addView(
+        robotRow.addView(
                 robotInfo,
                 new LinearLayout.LayoutParams(
                         0,
@@ -162,71 +154,67 @@ public class MainActivity extends Activity {
                 )
         );
 
-        TextView version = text(
+        TextView version = makeText(
                 "V1.0",
-                11,
+                10,
                 GOLD,
                 true
         );
 
-        robotTop.addView(version);
+        robotRow.addView(version);
 
-        robotCard.addView(robotTop);
+        robotCard.addView(robotRow);
 
         addDivider(robotCard);
 
-        statusText = text(
-                "●  STOPPED",
+        statusText = makeText(
+                "● STOPPED",
                 13,
                 RED,
                 true
         );
+
         robotCard.addView(statusText);
 
         root.addView(robotCard);
 
-        // =====================================================
-        // ACCOUNT CONNECTION
-        // =====================================================
+        // ACCOUNT
+        addSectionTitle("ACCOUNT");
 
-        addTitle("ACCOUNT");
+        LinearLayout accountCard = makeCard();
 
-        LinearLayout accountCard = card();
+        LinearLayout accountRow = new LinearLayout(this);
+        accountRow.setGravity(Gravity.CENTER_VERTICAL);
 
-        LinearLayout connectionRow = new LinearLayout(this);
-        connectionRow.setOrientation(LinearLayout.HORIZONTAL);
-        connectionRow.setGravity(Gravity.CENTER_VERTICAL);
-
-        TextView accountCircle = text(
+        TextView mt = makeText(
                 "MT",
-                15,
+                14,
                 WHITE,
                 true
         );
-        accountCircle.setGravity(Gravity.CENTER);
-        accountCircle.setBackground(
-                rounded(Color.rgb(35, 46, 65), 100)
-        );
-        accountCircle.setPadding(
-                dp(10), dp(10), dp(10), dp(10)
-        );
 
-        connectionRow.addView(accountCircle);
+        mt.setGravity(Gravity.CENTER);
+        mt.setBackground(
+                round(Color.rgb(35, 46, 65), 50)
+        );
+        mt.setPadding(dp(12), dp(12), dp(12), dp(12));
+
+        accountRow.addView(mt);
 
         LinearLayout accountInfo = new LinearLayout(this);
         accountInfo.setOrientation(LinearLayout.VERTICAL);
         accountInfo.setPadding(dp(12), 0, 0, 0);
 
-        TextView accountTitle = text(
+        TextView accountTitle = makeText(
                 "Trading Account",
                 15,
                 WHITE,
                 true
         );
 
-        connectionText = text(
+        connectionText = makeText(
                 "Not connected",
-                12,
+                11,
                 MUTED,
                 false
         );
@@ -234,7 +222,7 @@ public class MainActivity extends Activity {
         accountInfo.addView(accountTitle);
         accountInfo.addView(connectionText);
 
-        connectionRow.addView(
+        accountRow.addView(
                 accountInfo,
                 new LinearLayout.LayoutParams(
                         0,
@@ -243,60 +231,59 @@ public class MainActivity extends Activity {
                 )
         );
 
-        Button connect = smallButton(
+        Button connectButton = smallButton(
                 "CONNECT",
                 BLUE
         );
 
-        connect.setOnClickListener(v -> {
+        connectButton.setOnClickListener(v -> {
             connectionText.setText("Demo account ready");
             connectionText.setTextColor(GREEN);
         });
 
-        connectionRow.addView(connect);
+        accountRow.addView(connectButton);
 
-        accountCard.addView(connectionRow);
-
+        accountCard.addView(accountRow);
         root.addView(accountCard);
 
-        // =====================================================
         // SETTINGS
-        // =====================================================
+        addSectionTitle("TRADING SETTINGS");
 
-        addTitle("TRADING SETTINGS");
+        LinearLayout settingsCard = makeCard();
 
-        LinearLayout settings = card();
+        addLabel(settingsCard, "ACCOUNT MODE");
 
-        addLabel(settings, "ACCOUNT MODE");
-        Spinner mode = spinner(
+        Spinner accountMode = makeSpinner(
                 new String[]{"Demo", "Real"}
         );
-        settings.addView(mode);
 
-        addSpace(settings, 8);
+        settingsCard.addView(accountMode);
 
-        addLabel(settings, "PLATFORM");
-        Spinner platform = spinner(
+        addGap(settingsCard, 8);
+
+        addLabel(settingsCard, "PLATFORM");
+
+        Spinner platform = makeSpinner(
                 new String[]{"MT5", "MT4"}
         );
-        settings.addView(platform);
 
-        addSpace(settings, 8);
+        settingsCard.addView(platform);
 
-        addLabel(settings, "SYMBOL");
-        Spinner symbol = spinner(
+        addGap(settingsCard, 8);
+
+        addLabel(settingsCard, "SYMBOL");
+
+        Spinner symbol = makeSpinner(
                 new String[]{"XAUUSD"}
         );
-        settings.addView(symbol);
 
-        addSpace(settings, 8);
+        settingsCard.addView(symbol);
 
-        addLabel(settings, "LOT SIZE");
+        addGap(settingsCard, 8);
 
-        LinearLayout lotRow = new LinearLayout(this);
-        lotRow.setOrientation(LinearLayout.HORIZONTAL);
+        addLabel(settingsCard, "LOT SIZE");
 
-        Spinner lot = spinner(
+        Spinner lot = makeSpinner(
                 new String[]{
                         "Minimum",
                         "0.01",
@@ -308,22 +295,13 @@ public class MainActivity extends Activity {
                 }
         );
 
-        lotRow.addView(
-                lot,
-                new LinearLayout.LayoutParams(
-                        0,
-                        dp(52),
-                        1
-                )
-        );
+        settingsCard.addView(lot);
 
-        settings.addView(lotRow);
+        addGap(settingsCard, 8);
 
-        addSpace(settings, 8);
+        addLabel(settingsCard, "MAX OPEN TRADES");
 
-        addLabel(settings, "MAX OPEN TRADES");
-
-        Spinner maxTrades = spinner(
+        Spinner maxTrades = makeSpinner(
                 new String[]{
                         "1 Trade",
                         "2 Trades",
@@ -333,113 +311,77 @@ public class MainActivity extends Activity {
                 }
         );
 
-        settings.addView(maxTrades);
+        settingsCard.addView(maxTrades);
 
-        addSpace(settings, 8);
+        addGap(settingsCard, 8);
 
-        addLabel(settings, "STOP LOSS");
+        addLabel(settingsCard, "STOP LOSS");
 
-        EditText sl = input("Enter SL");
+        EditText sl = makeInput("Enter Stop Loss");
+        settingsCard.addView(sl);
 
-        settings.addView(sl);
+        addGap(settingsCard, 8);
 
-        addSpace(settings, 8);
+        addLabel(settingsCard, "TAKE PROFIT");
 
-        addLabel(settings, "TAKE PROFIT");
+        EditText tp = makeInput("Enter Take Profit");
+        settingsCard.addView(tp);
 
-        EditText tp = input("Enter TP");
+        root.addView(settingsCard);
 
-        settings.addView(tp);
-
-        root.addView(settings);
-
-        // =====================================================
         // DASHBOARD
-        // =====================================================
+        addSectionTitle("LIVE DASHBOARD");
 
-        addTitle("LIVE DASHBOARD");
+        LinearLayout dashboardRow1 = new LinearLayout(this);
 
-        LinearLayout dashboard = new LinearLayout(this);
-        dashboard.setOrientation(LinearLayout.VERTICAL);
-
-        LinearLayout row1 = new LinearLayout(this);
-        row1.setOrientation(LinearLayout.HORIZONTAL);
-
-        profitText = dashboardBox(
-                row1,
+        profitText = dashboardItem(
+                dashboardRow1,
                 "FLOATING PROFIT",
                 "$0.00",
                 GREEN
         );
 
-        tradesText = dashboardBox(
-                row1,
+        tradesText = dashboardItem(
+                dashboardRow1,
                 "OPEN TRADES",
                 "0",
                 WHITE
         );
 
-        dashboard.addView(row1);
+        root.addView(dashboardRow1);
 
-        addSpace(dashboard, 10);
+        addGap(root, 10);
 
-        LinearLayout row2 = new LinearLayout(this);
-        row2.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout dashboardRow2 = new LinearLayout(this);
 
-        TextView direction = dashboardBox(
-                row2,
+        dashboardItem(
+                dashboardRow2,
                 "DIRECTION",
                 "WAITING",
                 GOLD
         );
 
-        lastTradeText = dashboardBox(
-                row2,
+        dashboardItem(
+                dashboardRow2,
                 "LAST TRADE",
                 "—",
                 MUTED
         );
 
-        dashboard.addView(row2);
+        root.addView(dashboardRow2);
 
-        root.addView(dashboard);
-
-        // =====================================================
-        // START / STOP
-        // =====================================================
-
-        addTitle("ROBOT CONTROL");
+        // CONTROL
+        addSectionTitle("ROBOT CONTROL");
 
         startButton = new Button(this);
         startButton.setText("START SCALPER");
         startButton.setTextSize(16);
-        startButton.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         startButton.setTextColor(Color.WHITE);
+        startButton.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         startButton.setAllCaps(false);
-        startButton.setBackground(
-                rounded(GREEN, 18)
-        );
-        startButton.setPadding(
-                dp(10), dp(5), dp(10), dp(5)
-        );
+        startButton.setBackground(round(GREEN, 18));
 
-        startButton.setOnClickListener(v -> {
-
-            statusText.setText("●  RUNNING");
-            statusText.setTextColor(GREEN);
-
-            connectionText.setText("Trading session active");
-            connectionText.setTextColor(GREEN);
-
-            profitText.setText("$0.00");
-            tradesText.setText("0");
-
-            startButton.setEnabled(false);
-            startButton.setAlpha(0.55f);
-
-            stopButton.setEnabled(true);
-            stopButton.setAlpha(1f);
-        });
+        startButton.setOnClickListener(v -> startRobot());
 
         root.addView(
                 startButton,
@@ -449,38 +391,22 @@ public class MainActivity extends Activity {
                 )
         );
 
-        addSpace(root, 10);
+        addGap(root, 10);
 
         stopButton = new Button(this);
         stopButton.setText("STOP ROBOT");
         stopButton.setTextSize(15);
-        stopButton.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         stopButton.setTextColor(WHITE);
+        stopButton.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         stopButton.setAllCaps(false);
         stopButton.setBackground(
-                rounded(Color.rgb(55, 24, 30), 18)
+                round(Color.rgb(65, 25, 32), 18)
         );
 
-        stopButton.setOnClickListener(v -> {
-
-            statusText.setText("●  STOPPED");
-            statusText.setTextColor(RED);
-
-            connectionText.setText("Session stopped");
-            connectionText.setTextColor(MUTED);
-
-            tradesText.setText("0");
-            profitText.setText("$0.00");
-
-            startButton.setEnabled(true);
-            startButton.setAlpha(1f);
-
-            stopButton.setEnabled(false);
-            stopButton.setAlpha(0.55f);
-        });
-
         stopButton.setEnabled(false);
-        stopButton.setAlpha(0.55f);
+        stopButton.setAlpha(0.5f);
+
+        stopButton.setOnClickListener(v -> stopRobot());
 
         root.addView(
                 stopButton,
@@ -490,33 +416,408 @@ public class MainActivity extends Activity {
                 )
         );
 
-        // =====================================================
-        // TRADE STATUS
-        // =====================================================
+        // NOTICE
+        addGap(root, 14);
 
-        addSpace(root, 14);
+        LinearLayout notice = makeCard();
 
-        LinearLayout notice = card();
-
-        TextView noticeTitle = text(
+        TextView noticeTitle = makeText(
                 "SCALPER STATUS",
-                13,
+                12,
                 GOLD,
                 true
         );
 
         notice.addView(noticeTitle);
 
-        TextView noticeText = text(
+        TextView noticeText = makeText(
                 "Ready for XAUUSD scalping\n\n" +
                 "• No Martingale\n" +
                 "• No loss multiplier\n" +
                 "• Maximum trades controlled\n" +
-                "• Demo testing recommended before Real",
+                "• Demo testing before Real trading",
                 12,
                 MUTED,
                 false
         );
 
-        noticeText.setPadding(
+        noticeText.setPadding(0, dp(8), 0, 0);
+        notice.addView(noticeText);
+
+        root.addView(notice);
+
+        // FOOTER
+        TextView footer = makeText(
+                "ALJO0D GOLD SCALPER • TRADING ENGINE",
+                10,
+                Color.rgb(90, 100, 115),
+                false
+        );
+
+        footer.setGravity(Gravity.CENTER);
+        footer.setPadding(0, dp(20), 0, 0);
+
+        root.addView(footer);
+
+        setContentView(scrollView);
+    }
+
+    private void startRobot() {
+
+        statusText.setText("● RUNNING");
+        statusText.setTextColor(GREEN);
+
+        connectionText.setText("Trading session active");
+        connectionText.setTextColor(GREEN);
+
+        profitText.setText("$0.00");
+        tradesText.setText("0");
+
+        startButton.setEnabled(false);
+        startButton.setAlpha(0.55f);
+
+        stopButton.setEnabled(true);
+        stopButton.setAlpha(1f);
+    }
+
+    private void stopRobot() {
+
+        statusText.setText("● STOPPED");
+        statusText.setTextColor(RED);
+
+        connectionText.setText("Session stopped");
+        connectionText.setTextColor(MUTED);
+
+        profitText.setText("$0.00");
+        tradesText.setText("0");
+
+        startButton.setEnabled(true);
+        startButton.setAlpha(1f);
+
+        stopButton.setEnabled(false);
+        stopButton.setAlpha(0.5f);
+    }
+
+    private TextView makeText(
+            String text,
+            float size,
+            int color,
+            boolean bold
+    ) {
+
+        TextView view = new TextView(this);
+
+        view.setText(text);
+        view.setTextSize(size);
+        view.setTextColor(color);
+
+        if (bold) {
+            view.setTypeface(
+                    Typeface.DEFAULT,
+                    Typeface.BOLD
+            );
+        }
+
+        return view;
+    }
+
+    private LinearLayout makeCard() {
+
+        LinearLayout card = new LinearLayout(this);
+
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setPadding(
+                dp(16),
+                dp(16),
+                dp(16),
+                dp(16)
+        );
+
+        card.setBackground(
+                round(CARD, 20)
+        );
+
+        LinearLayout.LayoutParams params =
+                new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+
+        params.setMargins(0, dp(4), 0, dp(6));
+
+        card.setLayoutParams(params);
+
+        return card;
+    }
+
+    private void addSectionTitle(String title) {
+
+        TextView titleView = makeText(
+                title,
+                11,
+                MUTED,
+                true
+        );
+
+        titleView.setPadding(
+                dp(3),
+                dp(16),
+                0,
+                dp(7)
+        );
+
+        root.addView(titleView);
+    }
+
+    private void addLabel(
+            LinearLayout parent,
+            String label
+    ) {
+
+        TextView labelView = makeText(
+                label,
+                10,
+                MUTED,
+                true
+        );
+
+        labelView.setPadding(
+                dp(2),
+                0,
+                0,
+                dp(5)
+        );
+
+        parent.addView(labelView);
+    }
+
+    private Spinner makeSpinner(String[] values) {
+
+        Spinner spinner = new Spinner(this);
+
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(
+                        this,
+                        android.R.layout.simple_spinner_item,
+                        values
+                ) {
+
+                    @Override
+                    public View getView(
+                            int position,
+                            View convertView,
+                            ViewGroup parent
+                    ) {
+
+                        TextView view =
+                                (TextView) super.getView(
+                                        position,
+                                        convertView,
+                                        parent
+                                );
+
+                        view.setTextColor(WHITE);
+                        view.setTextSize(14);
+                        view.setGravity(
+                                Gravity.CENTER_VERTICAL
+                        );
+
+                        return view;
+                    }
+                };
+
+        adapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item
+        );
+
+        spinner.setAdapter(adapter);
+
+        spinner.setBackground(
+                round(CARD2, 14)
+        );
+
+        return spinner;
+    }
+
+    private EditText makeInput(String hint) {
+
+        EditText input = new EditText(this);
+
+        input.setHint(hint);
+        input.setHintTextColor(
+                Color.rgb(105, 115, 130)
+        );
+        input.setTextColor(WHITE);
+        input.setTextSize(14);
+        input.setSingleLine(true);
+
+        input.setPadding(
+                dp(15),
+                0,
+                dp(15),
                 0
+        );
+
+        input.setBackground(
+                round(CARD2, 14)
+        );
+
+        return input;
+    }
+
+    private Button smallButton(
+            String title,
+            int color
+    ) {
+
+        Button button = new Button(this);
+
+        button.setText(title);
+        button.setTextSize(11);
+        button.setTextColor(WHITE);
+        button.setTypeface(
+                Typeface.DEFAULT,
+                Typeface.BOLD
+        );
+        button.setAllCaps(false);
+
+        button.setBackground(
+                round(color, 12)
+        );
+
+        return button;
+    }
+
+    private TextView dashboardItem(
+            LinearLayout row,
+            String title,
+            String value,
+            int valueColor
+    ) {
+
+        LinearLayout box = new LinearLayout(this);
+
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setGravity(Gravity.CENTER);
+
+        box.setPadding(
+                dp(8),
+                dp(14),
+                dp(8),
+                dp(14)
+        );
+
+        box.setBackground(
+                round(CARD, 18)
+        );
+
+        TextView titleView = makeText(
+                title,
+                9,
+                MUTED,
+                true
+        );
+
+        titleView.setGravity(Gravity.CENTER);
+
+        TextView valueView = makeText(
+                value,
+                18,
+                valueColor,
+                true
+        );
+
+        valueView.setGravity(Gravity.CENTER);
+
+        box.addView(titleView);
+        box.addView(valueView);
+
+        LinearLayout.LayoutParams params =
+                new LinearLayout.LayoutParams(
+                        0,
+                        dp(85),
+                        1
+                );
+
+        params.setMargins(
+                dp(3),
+                0,
+                dp(3),
+                0
+        );
+
+        row.addView(box, params);
+
+        return valueView;
+    }
+
+    private void addDivider(
+            LinearLayout parent
+    ) {
+
+        View divider = new View(this);
+
+        divider.setBackgroundColor(
+                Color.rgb(38, 46, 58)
+        );
+
+        LinearLayout.LayoutParams params =
+                new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        dp(1)
+                );
+
+        params.setMargins(
+                0,
+                dp(14),
+                0,
+                dp(12)
+        );
+
+        parent.addView(divider, params);
+    }
+
+    private void addGap(
+            LinearLayout parent,
+            int height
+    ) {
+
+        Space space = new Space(this);
+
+        parent.addView(
+                space,
+                new LinearLayout.LayoutParams(
+                        1,
+                        dp(height)
+                )
+        );
+    }
+
+    private GradientDrawable round(
+            int color,
+            int radius
+    ) {
+
+        GradientDrawable drawable =
+                new GradientDrawable();
+
+        drawable.setColor(color);
+        drawable.setCornerRadius(dp(radius));
+
+        return drawable;
+    }
+
+    private int GREEN_DARK() {
+        return Color.rgb(18, 48, 38);
+    }
+
+    private int dp(int value) {
+
+        return (int) (
+                value *
+                getResources()
+                        .getDisplayMetrics()
+                        .density
+        );
+    }
+}
