@@ -13,12 +13,23 @@ import android.widget.*;
 public class MainActivity extends Activity {
 
     private LinearLayout root;
+
     private TextView statusText;
     private TextView connectionText;
     private TextView profitText;
     private TextView tradesText;
+
     private Button startButton;
     private Button stopButton;
+
+    private Spinner accountModeSpinner;
+    private Spinner platformSpinner;
+    private Spinner symbolSpinner;
+    private Spinner lotSpinner;
+    private Spinner maxTradesSpinner;
+
+    private EditText slInput;
+    private EditText tpInput;
 
     private final int BG = Color.rgb(8, 12, 18);
     private final int CARD = Color.rgb(17, 23, 32);
@@ -118,6 +129,7 @@ public class MainActivity extends Activity {
                 dp(14),
                 dp(11)
         );
+
         gold.setBackground(
                 round(Color.rgb(55, 44, 22), 18)
         );
@@ -197,7 +209,13 @@ public class MainActivity extends Activity {
         mt.setBackground(
                 round(Color.rgb(35, 46, 65), 50)
         );
-        mt.setPadding(dp(12), dp(12), dp(12), dp(12));
+
+        mt.setPadding(
+                dp(12),
+                dp(12),
+                dp(12),
+                dp(12)
+        );
 
         accountRow.addView(mt);
 
@@ -236,10 +254,9 @@ public class MainActivity extends Activity {
                 BLUE
         );
 
-        connectButton.setOnClickListener(v -> {
-            connectionText.setText("Demo account ready");
-            connectionText.setTextColor(GREEN);
-        });
+        connectButton.setOnClickListener(v ->
+                connectAccount()
+        );
 
         accountRow.addView(connectButton);
 
@@ -253,37 +270,45 @@ public class MainActivity extends Activity {
 
         addLabel(settingsCard, "ACCOUNT MODE");
 
-        Spinner accountMode = makeSpinner(
-                new String[]{"Demo", "Real"}
+        accountModeSpinner = makeSpinner(
+                new String[]{
+                        "Demo",
+                        "Real"
+                }
         );
 
-        settingsCard.addView(accountMode);
+        settingsCard.addView(accountModeSpinner);
 
         addGap(settingsCard, 8);
 
         addLabel(settingsCard, "PLATFORM");
 
-        Spinner platform = makeSpinner(
-                new String[]{"MT5", "MT4"}
+        platformSpinner = makeSpinner(
+                new String[]{
+                        "MT5",
+                        "MT4"
+                }
         );
 
-        settingsCard.addView(platform);
+        settingsCard.addView(platformSpinner);
 
         addGap(settingsCard, 8);
 
         addLabel(settingsCard, "SYMBOL");
 
-        Spinner symbol = makeSpinner(
-                new String[]{"XAUUSD"}
+        symbolSpinner = makeSpinner(
+                new String[]{
+                        "XAUUSD"
+                }
         );
 
-        settingsCard.addView(symbol);
+        settingsCard.addView(symbolSpinner);
 
         addGap(settingsCard, 8);
 
         addLabel(settingsCard, "LOT SIZE");
 
-        Spinner lot = makeSpinner(
+        lotSpinner = makeSpinner(
                 new String[]{
                         "Minimum",
                         "0.01",
@@ -295,13 +320,13 @@ public class MainActivity extends Activity {
                 }
         );
 
-        settingsCard.addView(lot);
+        settingsCard.addView(lotSpinner);
 
         addGap(settingsCard, 8);
 
         addLabel(settingsCard, "MAX OPEN TRADES");
 
-        Spinner maxTrades = makeSpinner(
+        maxTradesSpinner = makeSpinner(
                 new String[]{
                         "1 Trade",
                         "2 Trades",
@@ -311,28 +336,35 @@ public class MainActivity extends Activity {
                 }
         );
 
-        settingsCard.addView(maxTrades);
+        settingsCard.addView(maxTradesSpinner);
 
         addGap(settingsCard, 8);
 
         addLabel(settingsCard, "STOP LOSS");
 
-        EditText sl = makeInput("Enter Stop Loss");
-        settingsCard.addView(sl);
+        slInput = makeInput(
+                "Enter Stop Loss"
+        );
+
+        settingsCard.addView(slInput);
 
         addGap(settingsCard, 8);
 
         addLabel(settingsCard, "TAKE PROFIT");
 
-        EditText tp = makeInput("Enter Take Profit");
-        settingsCard.addView(tp);
+        tpInput = makeInput(
+                "Enter Take Profit"
+        );
+
+        settingsCard.addView(tpInput);
 
         root.addView(settingsCard);
 
         // DASHBOARD
         addSectionTitle("LIVE DASHBOARD");
 
-        LinearLayout dashboardRow1 = new LinearLayout(this);
+        LinearLayout dashboardRow1 =
+                new LinearLayout(this);
 
         profitText = dashboardItem(
                 dashboardRow1,
@@ -352,7 +384,8 @@ public class MainActivity extends Activity {
 
         addGap(root, 10);
 
-        LinearLayout dashboardRow2 = new LinearLayout(this);
+        LinearLayout dashboardRow2 =
+                new LinearLayout(this);
 
         dashboardItem(
                 dashboardRow2,
@@ -374,14 +407,24 @@ public class MainActivity extends Activity {
         addSectionTitle("ROBOT CONTROL");
 
         startButton = new Button(this);
+
         startButton.setText("START SCALPER");
         startButton.setTextSize(16);
         startButton.setTextColor(Color.WHITE);
-        startButton.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        startButton.setAllCaps(false);
-        startButton.setBackground(round(GREEN, 18));
+        startButton.setTypeface(
+                Typeface.DEFAULT,
+                Typeface.BOLD
+        );
 
-        startButton.setOnClickListener(v -> startRobot());
+        startButton.setAllCaps(false);
+
+        startButton.setBackground(
+                round(GREEN, 18)
+        );
+
+        startButton.setOnClickListener(
+                v -> startRobot()
+        );
 
         root.addView(
                 startButton,
@@ -394,19 +437,31 @@ public class MainActivity extends Activity {
         addGap(root, 10);
 
         stopButton = new Button(this);
+
         stopButton.setText("STOP ROBOT");
         stopButton.setTextSize(15);
         stopButton.setTextColor(WHITE);
-        stopButton.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+
+        stopButton.setTypeface(
+                Typeface.DEFAULT,
+                Typeface.BOLD
+        );
+
         stopButton.setAllCaps(false);
+
         stopButton.setBackground(
-                round(Color.rgb(65, 25, 32), 18)
+                round(
+                        Color.rgb(65, 25, 32),
+                        18
+                )
         );
 
         stopButton.setEnabled(false);
         stopButton.setAlpha(0.5f);
 
-        stopButton.setOnClickListener(v -> stopRobot());
+        stopButton.setOnClickListener(
+                v -> stopRobot()
+        );
 
         root.addView(
                 stopButton,
@@ -441,7 +496,13 @@ public class MainActivity extends Activity {
                 false
         );
 
-        noticeText.setPadding(0, dp(8), 0, 0);
+        noticeText.setPadding(
+                0,
+                dp(8),
+                0,
+                0
+        );
+
         notice.addView(noticeText);
 
         root.addView(notice);
@@ -455,47 +516,305 @@ public class MainActivity extends Activity {
         );
 
         footer.setGravity(Gravity.CENTER);
-        footer.setPadding(0, dp(20), 0, 0);
+
+        footer.setPadding(
+                0,
+                dp(20),
+                0,
+                0
+        );
 
         root.addView(footer);
 
         setContentView(scrollView);
     }
 
+    /*
+     * CONNECT ACCOUNT
+     *
+     * في هذه المرحلة نتأكد من أن التطبيق
+     * يستطيع الوصول إلى Trading Engine.
+     */
+    private void connectAccount() {
+
+        connectionText.setText(
+                "Connecting..."
+        );
+
+        connectionText.setTextColor(GOLD);
+
+        TradingApi.getAccount(
+                new TradingApi.ApiCallback() {
+
+                    @Override
+                    public void onSuccess(
+                            String response
+                    ) {
+
+                        connectionText.setText(
+                                "Engine connected"
+                        );
+
+                        connectionText.setTextColor(
+                                GREEN
+                        );
+
+                        Toast.makeText(
+                                MainActivity.this,
+                                "Trading Engine connected",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+
+                    @Override
+                    public void onError(
+                            String error
+                    ) {
+
+                        connectionText.setText(
+                                "Connection failed"
+                        );
+
+                        connectionText.setTextColor(
+                                RED
+                        );
+
+                        Toast.makeText(
+                                MainActivity.this,
+                                "Connection failed",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                }
+        );
+    }
+
+    /*
+     * START ROBOT
+     *
+     * يرسل جميع إعدادات المستخدم إلى Railway.
+     */
     private void startRobot() {
 
-        statusText.setText("● RUNNING");
-        statusText.setTextColor(GREEN);
+        String accountMode =
+                accountModeSpinner
+                        .getSelectedItem()
+                        .toString();
 
-        connectionText.setText("Trading session active");
-        connectionText.setTextColor(GREEN);
+        String platform =
+                platformSpinner
+                        .getSelectedItem()
+                        .toString();
 
-        profitText.setText("$0.00");
-        tradesText.setText("0");
+        String symbol =
+                symbolSpinner
+                        .getSelectedItem()
+                        .toString();
+
+        String lot =
+                lotSpinner
+                        .getSelectedItem()
+                        .toString();
+
+        String maxTrades =
+                maxTradesSpinner
+                        .getSelectedItem()
+                        .toString();
+
+        String stopLoss =
+                slInput.getText()
+                        .toString()
+                        .trim();
+
+        String takeProfit =
+                tpInput.getText()
+                        .toString()
+                        .trim();
 
         startButton.setEnabled(false);
         startButton.setAlpha(0.55f);
 
-        stopButton.setEnabled(true);
-        stopButton.setAlpha(1f);
+        connectionText.setText(
+                "Starting..."
+        );
+
+        connectionText.setTextColor(GOLD);
+
+        TradingApi.startRobot(
+                platform,
+                accountMode,
+                symbol,
+                lot,
+                maxTrades,
+                stopLoss,
+                takeProfit,
+                new TradingApi.ApiCallback() {
+
+                    @Override
+                    public void onSuccess(
+                            String response
+                    ) {
+
+                        statusText.setText(
+                                "● RUNNING"
+                        );
+
+                        statusText.setTextColor(
+                                GREEN
+                        );
+
+                        connectionText.setText(
+                                "Trading session active"
+                        );
+
+                        connectionText.setTextColor(
+                                GREEN
+                        );
+
+                        profitText.setText(
+                                "$0.00"
+                        );
+
+                        tradesText.setText(
+                                "0"
+                        );
+
+                        stopButton.setEnabled(
+                                true
+                        );
+
+                        stopButton.setAlpha(
+                                1f
+                        );
+
+                        Toast.makeText(
+                                MainActivity.this,
+                                "START command accepted",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+
+                    @Override
+                    public void onError(
+                            String error
+                    ) {
+
+                        startButton.setEnabled(
+                                true
+                        );
+
+                        startButton.setAlpha(
+                                1f
+                        );
+
+                        connectionText.setText(
+                                "Start failed"
+                        );
+
+                        connectionText.setTextColor(
+                                RED
+                        );
+
+                        Toast.makeText(
+                                MainActivity.this,
+                                "Start failed",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                }
+        );
     }
 
+    /*
+     * STOP ROBOT
+     */
     private void stopRobot() {
-
-        statusText.setText("● STOPPED");
-        statusText.setTextColor(RED);
-
-        connectionText.setText("Session stopped");
-        connectionText.setTextColor(MUTED);
-
-        profitText.setText("$0.00");
-        tradesText.setText("0");
-
-        startButton.setEnabled(true);
-        startButton.setAlpha(1f);
 
         stopButton.setEnabled(false);
         stopButton.setAlpha(0.5f);
+
+        connectionText.setText(
+                "Stopping..."
+        );
+
+        connectionText.setTextColor(GOLD);
+
+        TradingApi.stopRobot(
+                new TradingApi.ApiCallback() {
+
+                    @Override
+                    public void onSuccess(
+                            String response
+                    ) {
+
+                        statusText.setText(
+                                "● STOPPED"
+                        );
+
+                        statusText.setTextColor(
+                                RED
+                        );
+
+                        connectionText.setText(
+                                "Session stopped"
+                        );
+
+                        connectionText.setTextColor(
+                                MUTED
+                        );
+
+                        profitText.setText(
+                                "$0.00"
+                        );
+
+                        tradesText.setText(
+                                "0"
+                        );
+
+                        startButton.setEnabled(
+                                true
+                        );
+
+                        startButton.setAlpha(
+                                1f
+                        );
+
+                        Toast.makeText(
+                                MainActivity.this,
+                                "STOP command accepted",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+
+                    @Override
+                    public void onError(
+                            String error
+                    ) {
+
+                        stopButton.setEnabled(
+                                true
+                        );
+
+                        stopButton.setAlpha(
+                                1f
+                        );
+
+                        connectionText.setText(
+                                "Stop failed"
+                        );
+
+                        connectionText.setTextColor(
+                                RED
+                        );
+
+                        Toast.makeText(
+                                MainActivity.this,
+                                "Stop failed",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                }
+        );
     }
 
     private TextView makeText(
@@ -505,13 +824,15 @@ public class MainActivity extends Activity {
             boolean bold
     ) {
 
-        TextView view = new TextView(this);
+        TextView view =
+                new TextView(this);
 
         view.setText(text);
         view.setTextSize(size);
         view.setTextColor(color);
 
         if (bold) {
+
             view.setTypeface(
                     Typeface.DEFAULT,
                     Typeface.BOLD
@@ -523,9 +844,13 @@ public class MainActivity extends Activity {
 
     private LinearLayout makeCard() {
 
-        LinearLayout card = new LinearLayout(this);
+        LinearLayout card =
+                new LinearLayout(this);
 
-        card.setOrientation(LinearLayout.VERTICAL);
+        card.setOrientation(
+                LinearLayout.VERTICAL
+        );
+
         card.setPadding(
                 dp(16),
                 dp(16),
@@ -543,21 +868,29 @@ public class MainActivity extends Activity {
                         ViewGroup.LayoutParams.WRAP_CONTENT
                 );
 
-        params.setMargins(0, dp(4), 0, dp(6));
+        params.setMargins(
+                0,
+                dp(4),
+                0,
+                dp(6)
+        );
 
         card.setLayoutParams(params);
 
         return card;
     }
 
-    private void addSectionTitle(String title) {
+    private void addSectionTitle(
+            String title
+    ) {
 
-        TextView titleView = makeText(
-                title,
-                11,
-                MUTED,
-                true
-        );
+        TextView titleView =
+                makeText(
+                        title,
+                        11,
+                        MUTED,
+                        true
+                );
 
         titleView.setPadding(
                 dp(3),
@@ -574,12 +907,13 @@ public class MainActivity extends Activity {
             String label
     ) {
 
-        TextView labelView = makeText(
-                label,
-                10,
-                MUTED,
-                true
-        );
+        TextView labelView =
+                makeText(
+                        label,
+                        10,
+                        MUTED,
+                        true
+                );
 
         labelView.setPadding(
                 dp(2),
@@ -591,9 +925,12 @@ public class MainActivity extends Activity {
         parent.addView(labelView);
     }
 
-    private Spinner makeSpinner(String[] values) {
+    private Spinner makeSpinner(
+            String[] values
+    ) {
 
-        Spinner spinner = new Spinner(this);
+        Spinner spinner =
+                new Spinner(this);
 
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<String>(
@@ -610,14 +947,19 @@ public class MainActivity extends Activity {
                     ) {
 
                         TextView view =
-                                (TextView) super.getView(
-                                        position,
-                                        convertView,
-                                        parent
-                                );
+                                (TextView)
+                                        super.getView(
+                                                position,
+                                                convertView,
+                                                parent
+                                        );
 
-                        view.setTextColor(WHITE);
+                        view.setTextColor(
+                                WHITE
+                        );
+
                         view.setTextSize(14);
+
                         view.setGravity(
                                 Gravity.CENTER_VERTICAL
                         );
@@ -627,7 +969,8 @@ public class MainActivity extends Activity {
                 };
 
         adapter.setDropDownViewResource(
-                android.R.layout.simple_spinner_dropdown_item
+                android.R.layout
+                        .simple_spinner_dropdown_item
         );
 
         spinner.setAdapter(adapter);
@@ -639,14 +982,19 @@ public class MainActivity extends Activity {
         return spinner;
     }
 
-    private EditText makeInput(String hint) {
+    private EditText makeInput(
+            String hint
+    ) {
 
-        EditText input = new EditText(this);
+        EditText input =
+                new EditText(this);
 
         input.setHint(hint);
+
         input.setHintTextColor(
                 Color.rgb(105, 115, 130)
         );
+
         input.setTextColor(WHITE);
         input.setTextSize(14);
         input.setSingleLine(true);
@@ -670,15 +1018,18 @@ public class MainActivity extends Activity {
             int color
     ) {
 
-        Button button = new Button(this);
+        Button button =
+                new Button(this);
 
         button.setText(title);
         button.setTextSize(11);
         button.setTextColor(WHITE);
+
         button.setTypeface(
                 Typeface.DEFAULT,
                 Typeface.BOLD
         );
+
         button.setAllCaps(false);
 
         button.setBackground(
@@ -695,10 +1046,16 @@ public class MainActivity extends Activity {
             int valueColor
     ) {
 
-        LinearLayout box = new LinearLayout(this);
+        LinearLayout box =
+                new LinearLayout(this);
 
-        box.setOrientation(LinearLayout.VERTICAL);
-        box.setGravity(Gravity.CENTER);
+        box.setOrientation(
+                LinearLayout.VERTICAL
+        );
+
+        box.setGravity(
+                Gravity.CENTER
+        );
 
         box.setPadding(
                 dp(8),
@@ -711,23 +1068,29 @@ public class MainActivity extends Activity {
                 round(CARD, 18)
         );
 
-        TextView titleView = makeText(
-                title,
-                9,
-                MUTED,
-                true
+        TextView titleView =
+                makeText(
+                        title,
+                        9,
+                        MUTED,
+                        true
+                );
+
+        titleView.setGravity(
+                Gravity.CENTER
         );
 
-        titleView.setGravity(Gravity.CENTER);
+        TextView valueView =
+                makeText(
+                        value,
+                        18,
+                        valueColor,
+                        true
+                );
 
-        TextView valueView = makeText(
-                value,
-                18,
-                valueColor,
-                true
+        valueView.setGravity(
+                Gravity.CENTER
         );
-
-        valueView.setGravity(Gravity.CENTER);
 
         box.addView(titleView);
         box.addView(valueView);
@@ -746,7 +1109,10 @@ public class MainActivity extends Activity {
                 0
         );
 
-        row.addView(box, params);
+        row.addView(
+                box,
+                params
+        );
 
         return valueView;
     }
@@ -755,7 +1121,8 @@ public class MainActivity extends Activity {
             LinearLayout parent
     ) {
 
-        View divider = new View(this);
+        View divider =
+                new View(this);
 
         divider.setBackgroundColor(
                 Color.rgb(38, 46, 58)
@@ -774,7 +1141,10 @@ public class MainActivity extends Activity {
                 dp(12)
         );
 
-        parent.addView(divider, params);
+        parent.addView(
+                divider,
+                params
+        );
     }
 
     private void addGap(
@@ -782,7 +1152,8 @@ public class MainActivity extends Activity {
             int height
     ) {
 
-        Space space = new Space(this);
+        Space space =
+                new Space(this);
 
         parent.addView(
                 space,
@@ -802,13 +1173,20 @@ public class MainActivity extends Activity {
                 new GradientDrawable();
 
         drawable.setColor(color);
-        drawable.setCornerRadius(dp(radius));
+        drawable.setCornerRadius(
+                dp(radius)
+        );
 
         return drawable;
     }
 
     private int GREEN_DARK() {
-        return Color.rgb(18, 48, 38);
+
+        return Color.rgb(
+                18,
+                48,
+                38
+        );
     }
 
     private int dp(int value) {
