@@ -1,0 +1,12 @@
+{
+  "name": "aljo0d-gold-scalper-backend",
+  "version": "1.0.0",
+  "description": "ALJO0D GOLD SCALPER Trading Engine",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
