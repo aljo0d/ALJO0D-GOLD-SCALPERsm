@@ -12,21 +12,12 @@ public class TradingApi {
     /*
      * ALJO0D GOLD SCALPER
      * Trading Engine API
-     *
-     * هذا الملف هو طبقة الاتصال بين تطبيق Android
-     * ومحرك التداول الذي سنربطه لاحقاً بـ MT5 / MT4.
-     *
-     * لا نضع بيانات دخول حساب التداول داخل التطبيق.
      */
 
-    private static final int TIMEOUT = 10000;
+    private static final int TIMEOUT = 15000;
 
-    /*
-     * سيتم استبدال هذا العنوان بعنوان محرك التداول
-     * الحقيقي بعد إنشاء الـ Backend.
-     */
     private static final String API_BASE_URL =
-            "https://YOUR-TRADING-ENGINE-URL";
+            "https://aljo0d-gold-scalpersm-production.up.railway.app";
 
     public interface ApiCallback {
 
@@ -107,6 +98,7 @@ public class TradingApi {
                         (HttpURLConnection) url.openConnection();
 
                 connection.setRequestMethod("POST");
+
                 connection.setConnectTimeout(TIMEOUT);
                 connection.setReadTimeout(TIMEOUT);
 
@@ -115,7 +107,7 @@ public class TradingApi {
 
                 connection.setRequestProperty(
                         "Content-Type",
-                        "application/json"
+                        "application/json; charset=UTF-8"
                 );
 
                 connection.setRequestProperty(
