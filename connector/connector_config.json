@@ -1,0 +1,9 @@
+{
+  "environment": "demo",
+  "platform": "MT5",
+  "symbol": "XAUUSD",
+  "poll_interval_seconds": 2,
+  "max_trades": 1,
+  "real_trading_enabled": false,
+  "api_base_url": "https://aljo0d-gold-scalpersm-production.up.railway.app"
+}
